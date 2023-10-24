@@ -1,0 +1,15 @@
+{
+  "name": "talkmoni_sso",
+  "version": "1.0.0",
+  "description": "Secure and Simplified Identity Access Management",
+  "main": "bin/www",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://git-codecommit.eu-west-2.amazonaws.com/v1/repos/talkmoni_sso"
+  },
+  "author": "infinexpartners",
+  "license": "ISC"
+}
