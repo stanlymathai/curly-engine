@@ -3,17 +3,9 @@
   "version": "0.1.0",
   "private": true,
   "dependencies": {
-    "@emotion/styled": "^11.11.0",
-    "@miracl/client-js": "^7.4.0",
-    "@mui/icons-material": "^5.11.16",
-    "@mui/material": "^5.12.3",
-    "axios": "^1.4.0",
-    "copy-to-clipboard": "^3.3.3",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
-    "react-router-dom": "^6.14.1",
-    "react-scripts": "5.0.1",
-    "react-toastify": "^9.1.3"
+    "react-scripts": "5.0.1"
   },
   "scripts": {
     "start:local": "react-scripts start",
