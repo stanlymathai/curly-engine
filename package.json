@@ -11,5 +11,16 @@
     "url": "https://git-codecommit.eu-west-2.amazonaws.com/v1/repos/talkmoni_sso"
   },
   "author": "infinexpartners",
-  "license": "ISC"
+  "dependencies": {
+    "bcrypt": "^5.1.1",
+    "cors": "^2.8.5",
+    "dotenv": "^16.3.1",
+    "express": "^4.18.2",
+    "express-rate-limit": "^7.1.1",
+    "helmet": "^7.0.0",
+    "jsonwebtoken": "^9.0.2",
+    "mongodb": "^6.0.0",
+    "mongoose": "^7.5.1",
+    "uuid": "^9.0.1"
+  }
 }

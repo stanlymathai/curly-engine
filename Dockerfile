@@ -1,35 +1,35 @@
 # Use multi-stage build to separate build and production stages
 
-## Build stage for backend
-FROM node:16 AS backend-build
+## Build stage for server
+FROM node:16 AS server
 WORKDIR /usr/src/app
 
 # Copy and install app dependencies
 COPY ["package.json", "package-lock.json", "./"]
-RUN npm install --verbose
+RUN npm ci --only=production
 
-# Copy the rest of your app's source code to image filesystem.
+# Copy the rest of source code to image filesystem.
 COPY . .
 
-## Build stage for frontend
-FROM node:16 AS frontend-build
+## Build stage for client
+FROM node:16 AS client
 WORKDIR /app
 
-# Installing dependencies for the frontend
+# Installing dependencies for the client
 COPY ["client/package.json", "client/package-lock.json", "./"]
 RUN npm install
 
-# Building the front end
+# Building the client
 COPY client/ ./
 RUN npm run prod:build
 
 ## Production stage
-FROM node:16
+FROM node:16-alpine
 WORKDIR /usr/src/app
 
-# Copy the build artifacts from the previous stages
-COPY --from=backend-build /usr/src/app/ ./
-COPY --from=frontend-build /app/static ./static
+# Copy the build artifacts
+COPY --from=server /usr/src/app/ ./
+COPY --from=client /app/build ./static
 
 # Set environment variables
 

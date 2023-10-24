@@ -9,9 +9,7 @@
   },
   "scripts": {
     "start:local": "react-scripts start",
-    "build": "react-scripts build --silent",
-    "migrate": "rm -rf ../static && mv build ../static",
-    "prod:build": "npm run build && npm run migrate"
+    "prod:build": "react-scripts build"
   },
   "eslintConfig": {
     "extends": [
