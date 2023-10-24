@@ -1,7 +1,7 @@
 # Use multi-stage build to separate build and production stages
 
-## Build stage for server
-FROM node:16 AS server
+# Build stage for server
+FROM node:16 AS builder
 WORKDIR /usr/src/app
 
 # Copy and install app dependencies
@@ -11,25 +11,15 @@ RUN npm ci --only=production
 # Copy the rest of source code to image filesystem.
 COPY . .
 
-## Build stage for client
-FROM node:16 AS client
-WORKDIR /app
+# Removing Unnecessary Files
+RUN rm -rf client
 
-# Installing dependencies for the client
-COPY ["client/package.json", "client/package-lock.json", "./"]
-RUN npm install
-
-# Building the client
-COPY client/ ./
-RUN npm run prod:build
-
-## Production stage
+# Production stage
 FROM node:16-alpine
 WORKDIR /usr/src/app
 
 # Copy the build artifacts
-COPY --from=server /usr/src/app/ ./
-COPY --from=client /app/build ./static
+COPY --from=builder /usr/src/app/ ./
 
 # Set environment variables
 
