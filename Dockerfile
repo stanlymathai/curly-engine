@@ -1,27 +1,31 @@
-# Use multi-stage build to separate build and production stages
+## Build stage
+FROM rust:1-slim-bullseye AS builder
+WORKDIR /code
 
-# Build stage for server
-FROM node:16 AS builder
-WORKDIR /usr/src/app
+# Download crates-io index and fetch dependency code.
+# This step avoids needing to spend time on every build 
+# downloading the index, which can take a long time within
+# the docker context. Docker will cache it.
 
-# Copy and install app dependencies
-COPY ["package.json", "package-lock.json", "./"]
-RUN npm ci --only=production
+RUN USER=root cargo init
+COPY Cargo.toml Cargo.toml
+RUN cargo fetch
 
-# Copy the rest of source code to image filesystem.
-COPY . .
+# copy app files
+COPY src src
 
-# Removing Unnecessary Files
-RUN rm -rf client
+## Build the app
+RUN cargo build --release
 
-# Production stage
-FROM node:16-alpine
-WORKDIR /usr/src/app
+## Production stage
+FROM debian:bullseye-slim
+WORKDIR /app
 
 # Copy the build artifacts
-COPY --from=builder /usr/src/app/ ./
+COPY --from=builder /code/target/release/talkmoni_sso talkmoni_sso
 
-# Set environment variables
+
+## Set environment variables
 
 # app
 ARG APP_ENV
@@ -56,13 +60,15 @@ ARG DB_CONNECTION_TIMEOUT
 ENV DB_CONNECTION_TIMEOUT ${DB_CONNECTION_TIMEOUT}
 
 
-# Run as non-root user for security
-USER node
+# Run as non-root user for security reasons 
+RUN groupadd -r appuser && useradd -r -g appuser appuser
+RUN chown -R appuser:appuser /app
+
+# Switch to the appuser
+USER appuser
 
 # Expose the port the app runs on
 EXPOSE 8080
 
-# Add a health check command
-HEALTHCHECK --interval=12s --timeout=12s --start-period=30s CMD node ./src/utils/healthCheck.util.js
-
-CMD ["./bin/www"]
+# Run the app
+CMD [ "/app/talkmoni_sso" ]
