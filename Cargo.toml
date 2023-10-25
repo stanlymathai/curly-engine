@@ -1,0 +1,15 @@
+[package]
+name = "talkmoni_sso"
+version = "0.1.0"
+edition = "2021"
+
+authors = ["infinexpartners"]
+keywords = ["sso", "talkmoni", "identity_management"]
+description = "Secure and Simplified Identity Access Management"
+repository = "https://git-codecommit.eu-west-2.amazonaws.com/v1/repos/talkmoni_sso"
+
+
+[dependencies]
+actix-web = "4.4.0"
+mongodb = "2.7.0"
+serde = "1.0.189"
