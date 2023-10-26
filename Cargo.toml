@@ -11,5 +11,10 @@ repository = "https://git-codecommit.eu-west-2.amazonaws.com/v1/repos/talkmoni_s
 
 [dependencies]
 actix-web = "4.4.0"
-mongodb = "2.7.0"
+dotenv = "0.15.0"
 serde = "1.0.189"
+
+[dependencies.mongodb]
+version = "2.7.0"
+default-features = false
+features = ["async-std-runtime"]
