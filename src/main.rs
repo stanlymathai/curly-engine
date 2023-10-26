@@ -10,8 +10,8 @@ use std::env;
 
 #[actix_web::main]
 async fn main() -> std::io::Result<()> {
-    // dotenv::dotenv().ok();
-    dotenv::dotenv().expect("Failed to read .env file");
+    dotenv::dotenv().ok();
+    // dotenv::dotenv().expect("Failed to read .env file");
     let app_port = 8080;
     let app_host = "0.0.0.0";
     let db_uri = env::var("MONGO_URI").unwrap();
