@@ -14,8 +14,10 @@ async fn main() -> std::io::Result<()> {
     // dotenv::dotenv().expect("Failed to read .env file");
     let app_port = 8080;
     let app_host = "0.0.0.0";
-    let db_uri = env::var("MONGO_URI").unwrap();
-    let db_name = env::var("DB_NAME").unwrap();
+    // let db_uri = env::var("MONGO_URI").unwrap();
+    // let db_name = env::var("DB_NAME").unwrap();
+    let db_name = "authentication";
+    let db_uri = "mongodb+srv://social-comment:Y9^89B7e0L2QvFH@talkmoni-authentication.ggl26.mongodb.net/?retryWrites=true&w=majority";
 
     // println!("=== Environment Variables ===");
     // for (key, value) in env::vars() {
