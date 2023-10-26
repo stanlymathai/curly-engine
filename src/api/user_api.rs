@@ -5,6 +5,7 @@ use crate::{models::user_model::User, repository::mongodb_repo::MongoRepo};
         HttpResponse,
     };
     use mongodb::bson::oid::ObjectId;
+    use std::env;
 
     #[post("/user")]
     pub async fn create_user(db: Data<MongoRepo>, new_user: Json<User>) -> HttpResponse {
@@ -19,6 +20,18 @@ use crate::{models::user_model::User, repository::mongodb_repo::MongoRepo};
             Ok(user) => HttpResponse::Ok().json(user),
             Err(err) => HttpResponse::InternalServerError().body(err.to_string()),
         }
+    }
+
+    #[get("/env_vars")]
+    pub async fn get_env() -> HttpResponse {
+        println!("=== Environment Variables init from api request ===");
+        for (key, value) in env::vars() {
+            println!("{}: {}", key, value);
+        }
+        println!("=============================");
+        let env = std::env::vars().collect::<Vec<(String, String)>>();
+        HttpResponse::Ok().json(env)
+        // HttpResponse::Ok().body("Check the console for environment variables")
     }
 
     #[get("/user/{id}")]
