@@ -1,22 +1,29 @@
-
 use crate::models::user_model::User;
 use mongodb::{
     bson::{doc, extjson::de::Error, oid::ObjectId},
     results::{InsertOneResult, UpdateResult},
     Client, Collection,
 };
+use std::env;
 
 pub struct MongoRepo {
     col: Collection<User>,
 }
 
 impl MongoRepo {
-    pub async fn establish_connection(uri: &str, db_name: &str ) -> Self {
-        println!("Connecting to MongoDB at {}", uri);
-        println!("Database: {}", db_name);
+    pub async fn establish_connection() -> Self {
+        let db_name = env::var("DB_NAME").unwrap();
+        let db_host = env::var("DB_HOST").unwrap();
+        let db_user = env::var("DB_USERNAME").unwrap();
+        let db_password = env::var("DB_PASSWORD").unwrap();
 
-        let client = Client::with_uri_str(uri).await.unwrap();
-        let db = client.database("authentication");
+        let uri_str = format!(
+            "mongodb+srv://{}:{}@{}.mongodb.net/?retryWrites=true&w=majority",
+            db_user, db_password, db_host
+        );
+
+        let client = Client::with_uri_str(uri_str).await.unwrap();
+        let db = client.database(&db_name);
         let col: Collection<User> = db.collection("User");
         MongoRepo { col }
     }
