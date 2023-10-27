@@ -2,8 +2,8 @@ mod api;
 mod models;
 mod repository;
 
-use actix_web::{web, web::Data, App, HttpServer, Responder, HttpResponse};
-use api::user_api::{create_user, get_env, get_user, update_user};
+use actix_web::{web, web::Data, App, HttpResponse, HttpServer, Responder};
+use api::user_api::{create_user, get_user, update_user};
 use repository::mongodb_repo::MongoRepo;
 
 #[actix_web::main]
@@ -19,7 +19,6 @@ async fn main() -> std::io::Result<()> {
             .service(create_user)
             .service(update_user)
             .service(get_user)
-            .service(get_env)
             .route("/", web::get().to(index))
     })
     .bind(("0.0.0.0", 8080))?
@@ -28,5 +27,5 @@ async fn main() -> std::io::Result<()> {
 }
 
 async fn index() -> impl Responder {
-    HttpResponse::Ok().body("Hey there!")
+    HttpResponse::Ok().body("Joy in every hello! 👋😊")
 }
