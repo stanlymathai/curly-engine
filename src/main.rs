@@ -2,7 +2,7 @@ mod api;
 mod models;
 mod repository;
 
-use actix_web::{web::Data, App, HttpServer};
+use actix_web::{web, web::Data, App, HttpServer, Responder, HttpResponse};
 use api::user_api::{create_user, get_env, get_user, update_user};
 use repository::mongodb_repo::MongoRepo;
 
@@ -20,8 +20,13 @@ async fn main() -> std::io::Result<()> {
             .service(update_user)
             .service(get_user)
             .service(get_env)
+            .route("/", web::get().to(index))
     })
     .bind(("0.0.0.0", 8080))?
     .run()
     .await
+}
+
+async fn index() -> impl Responder {
+    HttpResponse::Ok().body("Hey there!")
 }
