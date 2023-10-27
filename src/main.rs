@@ -27,5 +27,7 @@ async fn main() -> std::io::Result<()> {
 }
 
 async fn index() -> impl Responder {
-    HttpResponse::Ok().body("Joy in every hello! 👋😊")
+    HttpResponse::Ok()
+        .content_type("text/html; charset=utf-8")
+        .body("Joy in every hello! 👋😊")
 }
