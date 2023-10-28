@@ -1,4 +1,4 @@
-use crate::{models::user_model::User, repository::mongodb_repo::MongoRepo};
+use crate::{models::user_model::User, repository::user_repo::UserRepo};
 use actix_web::{
     get, post, put,
     web::{Data, Json, Path},
@@ -7,7 +7,7 @@ use actix_web::{
 use mongodb::bson::oid::ObjectId;
 
 #[post("/user")]
-pub async fn create_user(db: Data<MongoRepo>, new_user: Json<User>) -> HttpResponse {
+pub async fn create_user(db: Data<UserRepo>, new_user: Json<User>) -> HttpResponse {
     let data = User {
         id: None,
         name: new_user.name.to_owned(),
@@ -22,7 +22,7 @@ pub async fn create_user(db: Data<MongoRepo>, new_user: Json<User>) -> HttpRespo
 }
 
 #[get("/user/{id}")]
-pub async fn get_user(db: Data<MongoRepo>, path: Path<String>) -> HttpResponse {
+pub async fn get_user(db: Data<UserRepo>, path: Path<String>) -> HttpResponse {
     let id = path.into_inner();
     if id.is_empty() {
         return HttpResponse::BadRequest().body("invalid ID");
@@ -36,7 +36,7 @@ pub async fn get_user(db: Data<MongoRepo>, path: Path<String>) -> HttpResponse {
 
 #[put("/user/{id}")]
 pub async fn update_user(
-    db: Data<MongoRepo>,
+    db: Data<UserRepo>,
     path: Path<String>,
     new_user: Json<User>,
 ) -> HttpResponse {
