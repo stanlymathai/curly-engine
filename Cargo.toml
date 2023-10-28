@@ -10,10 +10,9 @@ description = "Secure and Simplified Identity Access Management"
 repository = "https://git-codecommit.eu-west-2.amazonaws.com/v1/repos/talkmoni_sso"
 
 [dependencies]
+actix-cors = "0.6.4"
 actix-web = "4.4.0"
 dotenv = "0.15.0"
-env_logger = "0.10.0"
-log = "0.4.20"
 
 
 [dependencies.serde]
