@@ -25,7 +25,7 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
             e
         })?;
 
-    let repository = UserRepo::new(db.client.clone());
+    let repository = UserRepo::new(db.instance.clone());
     let repo_handle = Data::new(repository);
 
     let server = HttpServer::new(move || {
