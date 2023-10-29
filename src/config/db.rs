@@ -1,29 +1,20 @@
 use mongodb::{Client, Database};
-use std::{env, sync::Arc};
+use std::sync::Arc;
 
 pub struct Db {
     pub client: Arc<Database>,
 }
 
 impl Db {
-    pub async fn establish_connection() -> Self {
-        let db_name = env::var("DB_NAME").expect("DB_NAME is not set");
-        let db_host = env::var("DB_HOST").expect("DB_HOST is not set");
-        let db_user = env::var("DB_USERNAME").expect("DB_USERNAME is not set");
-        let db_password = env::var("DB_PASSWORD").expect("DB_PASSWORD is not set");
-
-        let uri_str = format!(
-            "mongodb+srv://{}:{}@{}.mongodb.net/{}?retryWrites=true&w=majority",
-            db_user, db_password, db_host, db_name
-        );
-
-        let client = Client::with_uri_str(&uri_str)
-            .await
-            .expect("Failed to initialize client.");
+    pub async fn establish_connection(
+        uri: String,
+        db_name: String,
+    ) -> Result<Self, Box<dyn std::error::Error>> {
+        let client = Client::with_uri_str(&uri).await?;
         let database = client.database(&db_name);
 
-        Db {
+        Ok(Db {
             client: Arc::new(database),
-        }
+        })
     }
 }
