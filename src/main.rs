@@ -28,7 +28,7 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
     let repository = UserRepo::new(db.client.clone());
     let repo_handle = Data::new(repository);
 
-    HttpServer::new(move || {
+    let server = HttpServer::new(move || {
         let cors_config = cors::get_cors();
 
         App::new()
@@ -40,8 +40,11 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
             .route("/", web::get().to(index))
     })
     .bind(("0.0.0.0", app_port))?
-    .run()
-    .await?;
+    .run();
+
+    println!("🚀 Server running at port {}", app_port);
+
+    server.await?;
 
     Ok(())
 }
