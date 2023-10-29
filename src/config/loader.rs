@@ -8,6 +8,7 @@ pub fn load_configuration() -> Result<(u16, String, String), String> {
 
     let db_name = std::env::var("DB_NAME").map_err(|_| "DB_NAME must be set".to_string())?;
     let db_host = std::env::var("DB_HOST").map_err(|_| "DB_HOST must be set".to_string())?;
+
     let db_user =
         std::env::var("DB_USERNAME").map_err(|_| "DB_USERNAME must be set".to_string())?;
     let db_password =

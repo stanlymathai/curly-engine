@@ -15,11 +15,19 @@ actix-web = "4.4.0"
 dotenv = "0.15.0"
 
 
-[dependencies.serde]
-version = "1.0.189"
-features = ["derive"]
+[dependencies.chrono]
+version = "0.4.31"
+features = ["serde"]
 
 [dependencies.mongodb]
 version = "2.7.0"
 default-features = false
 features = ["tokio-runtime"]
+
+[dependencies.serde]
+version = "1.0.189"
+features = ["derive"]
+
+[dependencies.uuid]
+version = "1.5.0"
+features = ["serde", "v4"]
