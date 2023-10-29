@@ -1,12 +1,14 @@
-mod api;
 mod config;
 mod models;
+mod payload;
+mod service;
+mod constants;
 mod repository;
 
 use actix_web::{web, web::Data, App, HttpResponse, HttpServer, Responder};
-use api::user_api::{create_user, get_user, update_user};
+use service::signup;
 use config::{cors, db::Db, loader};
-use repository::user_repo::UserRepo;
+use repository::customer_repo::CustomerRepo;
 
 #[actix_web::main]
 async fn main() -> Result<(), Box<dyn std::error::Error>> {
@@ -25,25 +27,23 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
             e
         })?;
 
-    let repository = UserRepo::new(db.instance.clone());
-    let repo_handle = Data::new(repository);
+    let repository = CustomerRepo::new(db.instance.clone());
+    let repo_data = Data::new(repository);
+
 
     let server = HttpServer::new(move || {
         let cors_config = cors::get_cors();
 
         App::new()
             .wrap(cors_config)
-            .app_data(repo_handle.clone())
-            .service(create_user)
-            .service(update_user)
-            .service(get_user)
+            .app_data(repo_data.clone())
+            .service(signup)
             .route("/", web::get().to(index))
     })
     .bind(("0.0.0.0", app_port))?
     .run();
 
     println!("🚀 Server running at port {}", app_port);
-
     server.await?;
 
     Ok(())

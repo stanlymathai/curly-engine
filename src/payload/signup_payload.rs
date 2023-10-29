@@ -1,6 +1,6 @@
 use chrono::{self, Utc};
 use serde::{Deserialize, Serialize};
-use validator::{Validate, ValidationError};
+use validator::ValidationError;
 use validator_derive::Validate;
 
 #[derive(Clone, Debug, Serialize, Deserialize, Validate)]
