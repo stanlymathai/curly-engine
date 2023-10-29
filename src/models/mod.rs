@@ -1,1 +1,1 @@
-pub mod user_model;
+pub mod customer_model;
