@@ -1,11 +1,11 @@
 mod app;
 mod configs;
 
-use configs::{settings, database::Db};
+use configs::{database::Db, settings::load_config};
 
 #[actix_web::main]
 async fn main() -> Result<(), Box<dyn std::error::Error>> {
-    let config = match settings::load_config() {
+    let config = match load_config() {
         Ok(c) => c,
         Err(e) => {
             eprintln!("Could not load configuration: {}", e);
@@ -13,10 +13,10 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
         }
     };
 
-    let db = Db::establish_connection(config.db_uri, config.db_name)
+    let db = Db::connect(config.db_uri, config.db_name)
         .await
         .map_err(|e| {
-            eprintln!("Could not establish DB connection: {}", e);
+            eprintln!("Error connecting to DB: {}", e);
             e
         })?;
 
