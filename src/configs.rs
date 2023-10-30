@@ -1,2 +1,3 @@
-pub mod settings;
 pub mod database;
+pub mod repository;
+pub mod settings;

@@ -1,5 +1,7 @@
 mod app;
 mod configs;
+mod models;
+mod services;
 
 use configs::{database::Db, settings::load_config};
 
