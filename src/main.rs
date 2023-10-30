@@ -1,37 +1,26 @@
 mod app;
-mod config;
-mod constants;
-mod models;
-mod payload;
-mod repository;
-mod service; 
+mod configs;
 
-use crate::app::run_server;
-use actix_web::web::Data;
-use config::{db::Db, loader};
-use repository::customer_repo::CustomerRepo;
+use configs::{settings, database::Db};
 
 #[actix_web::main]
 async fn main() -> Result<(), Box<dyn std::error::Error>> {
-    let (app_port, conn_string, db_name) = match loader::load_configuration() {
-        Ok(config) => config,
+    let config = match settings::load_config() {
+        Ok(c) => c,
         Err(e) => {
             eprintln!("Could not load configuration: {}", e);
             return Err(e.into());
         }
     };
 
-    let db = Db::establish_connection(conn_string, db_name)
+    let db = Db::establish_connection(config.db_uri, config.db_name)
         .await
         .map_err(|e| {
             eprintln!("Could not establish DB connection: {}", e);
             e
         })?;
 
-    let repository = CustomerRepo::new(db.instance.clone());
-    let repo_data = Data::new(repository);
-
-    run_server(app_port, repo_data).await?;
+    app::run_server(config.app_port, db.instance.clone()).await?;
 
     Ok(())
 }
