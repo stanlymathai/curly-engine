@@ -5,6 +5,7 @@ pub struct Config {
     pub app_port: u16,
     pub db_uri: String,
     pub db_name: String,
+    pub api_endpoint: String,
 }
 
 pub fn load_config() -> Result<Config, String> {
@@ -14,6 +15,9 @@ pub fn load_config() -> Result<Config, String> {
         .unwrap_or_else(|_| "7878".to_string())
         .parse()
         .map_err(|_| "APP_PORT must be a valid number".to_string())?;
+
+    let api_endpoint =
+        std::env::var("API_ENDPOINT").map_err(|_| "API_ENDPOINT must be set".to_string())?;
 
     let db_name = std::env::var("DB_NAME").map_err(|_| "DB_NAME must be set".to_string())?;
     let db_host = std::env::var("DB_HOST").map_err(|_| "DB_HOST must be set".to_string())?;
@@ -32,6 +36,7 @@ pub fn load_config() -> Result<Config, String> {
         app_port,
         db_uri,
         db_name,
+        api_endpoint,
     })
 }
 

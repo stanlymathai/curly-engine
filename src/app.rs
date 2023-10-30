@@ -1,14 +1,13 @@
 use crate::{
     configs::settings::config_cors,
     daos::dao_container,
-    services::signup::signup,
+    services::auth::{find_by_id, signup},
+    ServerConfig,
 };
 use actix_web::{web, App, HttpResponse, HttpServer, Responder};
-use mongodb::Database;
-use std::sync::Arc;
 
-pub async fn run_server(app_port: u16, db_instance: Arc<Database>) -> std::io::Result<()> {
-    let dao = dao_container::load(db_instance);
+pub async fn run_server(config: ServerConfig) -> std::io::Result<()> {
+    let dao = dao_container::load(config.db);
 
     let server = HttpServer::new(move || {
         let cors = config_cors();
@@ -16,13 +15,17 @@ pub async fn run_server(app_port: u16, db_instance: Arc<Database>) -> std::io::R
         App::new()
             .wrap(cors)
             .app_data(dao.signup_data.clone())
-            .service(signup)
+            .service(
+                web::scope(&config.api_endpoint)
+                    .service(signup)
+                    .service(find_by_id),
+            )
             .route("/", web::get().to(index))
     })
-    .bind(("0.0.0.0", app_port))?
+    .bind(("0.0.0.0", config.port))?
     .run();
 
-    println!("🚀 Server running at port {}", app_port);
+    println!("🚀 Server running at port {}", config.port);
 
     server.await?;
 

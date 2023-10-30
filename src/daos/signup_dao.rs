@@ -1,5 +1,7 @@
+use mongodb::{bson::doc, options::FindOptions, Cursor};
 use crate::models::signup_model::SignupData;
 use mongodb::{error::Error, results::InsertOneResult, Collection, Database};
+use futures_util::stream::StreamExt;
 use std::sync::Arc;
 
 pub struct SignupDao {
@@ -18,5 +20,21 @@ impl SignupDao {
             Err(e) => Err(e),
         }
     }
+
+    pub async fn find_by_identifier(&self, identifier: &str) -> Result<Option<SignupData>, Error> {
+        let filter = doc! {
+            "identifier": identifier
+        };
+        let find_options = FindOptions::builder().limit(1).build();
+        let mut cursor: Cursor<SignupData> = self.collection.find(filter, find_options).await?;
+        
+        if let Some(result) = cursor.next().await { 
+            match result {
+                Ok(data) => return Ok(Some(data)),
+                Err(e) => return Err(e),
+            }
+        }
     
+        Ok(None)
+    }
 }

@@ -1695,6 +1695,7 @@ dependencies = [
  "actix-web",
  "chrono",
  "dotenv",
+ "futures-util",
  "mongodb",
  "serde",
  "uuid",
