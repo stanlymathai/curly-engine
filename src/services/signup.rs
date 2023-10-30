@@ -1,22 +1,28 @@
-use crate::models::signup_model::SignupData;
-use mongodb::{error::Error, results::InsertOneResult, Collection, Database};
-use std::sync::Arc;
+use crate::constants;
+use crate::{
+    models::signup_model::SignupData,
+    daos::signup_dao::SignupDao,
+};
 
-pub struct SignupDao {
-    collection: Collection<SignupData>,
-}
+use actix_web::{
+    post,
+    web::{Data, Json},
+    Error, HttpResponse,
+};
 
-impl SignupDao {
-    pub fn new(db: Arc<Database>) -> Self {
-        let collection = db.collection("signup_data");
-        Self { collection }
-    }
+#[post("/signup")]
+pub async fn signup(
+    repository: Data<SignupDao>,
+    payload: Json<SignupData>,
+) -> Result<HttpResponse, Error> {
 
-    pub async fn create(&self, data: SignupData) -> Result<InsertOneResult, Error> {
-        match self.collection.insert_one(data, None).await {
-            Ok(insert_result) => Ok(insert_result),
-            Err(e) => Err(e),
+
+    match repository.create(payload.into_inner()).await {
+        Ok(_) => Ok(HttpResponse::Created().json(constants::SIGNUP_COMPLETED)),
+        Err(_) => {
+            Err(actix_web::error::ErrorInternalServerError(
+                constants::INTERNAL_SERVER_ERROR,
+            ))
         }
     }
-    
 }

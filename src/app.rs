@@ -1,20 +1,21 @@
-use crate::config::cors;
-use crate::handler::signup_handler::signup;
-use crate::repository::signup_repo::SignupRepo;
+use crate::{
+    configs::settings::config_cors,
+    daos::dao_container,
+    services::signup::signup,
+};
 use actix_web::{web, App, HttpResponse, HttpServer, Responder};
 use mongodb::Database;
 use std::sync::Arc;
 
 pub async fn run_server(app_port: u16, db_instance: Arc<Database>) -> std::io::Result<()> {
-    let repository = SignupRepo::new(db_instance);
-    let repo_data = web::Data::new(repository);
+    let dao = dao_container::load(db_instance);
 
     let server = HttpServer::new(move || {
-        let cors_config = cors::get_cors();
+        let cors = config_cors();
 
         App::new()
-            .wrap(cors_config)
-            .app_data(repo_data.clone())
+            .wrap(cors)
+            .app_data(dao.signup_data.clone())
             .service(signup)
             .route("/", web::get().to(index))
     })
