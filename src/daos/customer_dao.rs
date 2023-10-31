@@ -2,11 +2,11 @@ use crate::models::customer_model::Customer;
 use mongodb::{error::Error, results::InsertOneResult, Collection, Database};
 use std::sync::Arc;
 
-pub struct CustomerRepo {
+pub struct CustomerDao {
     collection: Collection<Customer>,
 }
 
-impl CustomerRepo {
+impl CustomerDao {
     pub fn new(db: Arc<Database>) -> Self {
         let collection = db.collection("customer");
         Self { collection }

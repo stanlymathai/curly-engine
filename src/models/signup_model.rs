@@ -39,16 +39,16 @@ pub enum Status {
 
 #[derive(Clone, Debug, Serialize, Deserialize)]
 pub struct UserDetails {
-    name: String,
+    pub name: String,
 
     #[serde(rename = "countryCode")]
-    country_code: String,
+    pub country_code: String,
 
     #[serde(rename = "emailAddress")]
-    email_address: String,
+    pub email_address: String,
 
     #[serde(rename = "dateOfBirth")]
-    date_of_birth: DateTime<Utc>,
+    pub date_of_birth: DateTime<Utc>,
 
 }
 

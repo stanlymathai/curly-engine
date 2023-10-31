@@ -16,6 +16,9 @@ pub struct Customer {
     #[serde(rename = "email")]
     pub email: String,
 
+    #[serde(rename = "signupRef")]
+    pub signup_ref: ObjectId,
+
     #[serde(rename = "dateOfBirth")]
     pub date_of_birth: DateTime<Utc>,
 
@@ -40,6 +43,7 @@ pub struct SecuritySecret {
 
 #[derive(Clone, Debug, Serialize, Deserialize)]
 pub enum Status {
-    Pending,
     Active,
+    Deleted,
+    Suspended,
 }

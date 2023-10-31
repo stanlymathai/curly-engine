@@ -44,7 +44,7 @@ pub fn config_cors() -> Cors {
     let allowed_orgin = std::env::var("CLIENT_URL").expect("CLIENT_URL is not set");
     Cors::default()
         .allowed_origin(&allowed_orgin)
-        .allowed_methods(vec!["POST"])
+        .allowed_methods(vec!["POST", "GET", "OPTIONS"])
         .allowed_headers(vec![header::CONTENT_TYPE])
         .max_age(3600) // 1 hour
 }

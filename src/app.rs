@@ -1,7 +1,7 @@
 use crate::{
     configs::settings::config_cors,
     daos::dao_container,
-    services::auth::{find_by_id, signup},
+    services::auth::{find_by_id, signup, get_env_vars},
     ServerConfig,
 };
 use actix_web::{web, App, HttpResponse, HttpServer, Responder};
@@ -15,10 +15,12 @@ pub async fn run_server(config: ServerConfig) -> std::io::Result<()> {
         App::new()
             .wrap(cors)
             .app_data(dao.signup_data.clone())
+            .app_data(dao.customer_data.clone())
             .service(
                 web::scope(&config.api_endpoint)
                     .service(signup)
-                    .service(find_by_id),
+                    .service(find_by_id)
+                    .service(get_env_vars),
             )
             .route("/", web::get().to(index))
     })
