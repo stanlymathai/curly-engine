@@ -2,11 +2,11 @@ use crate::{
     configs::settings::config_cors,
     daos::dao_container,
     services::auth::{find_by_id, signup, get_env_vars},
-    ServerConfig,
+    HttpServerConfig,
 };
 use actix_web::{web, App, HttpResponse, HttpServer, Responder};
 
-pub async fn run_server(config: ServerConfig) -> std::io::Result<()> {
+pub async fn run_server(config: HttpServerConfig) -> std::io::Result<()> {
     let dao = dao_container::load(config.db);
 
     let server = HttpServer::new(move || {
