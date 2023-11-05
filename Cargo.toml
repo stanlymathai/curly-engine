@@ -14,6 +14,8 @@ actix-cors = "0.6.4"
 actix-web = "4.4.0"
 dotenv = "0.15.0"
 futures-util = "0.3.29"
+prost = "0.12.1"
+tonic = "0.10.2"
 validator = "0.16.1"
 validator_derive = "0.16.0"
 
@@ -31,6 +33,13 @@ features = ["tokio-runtime"]
 version = "1.0.189"
 features = ["derive"]
 
+[dependencies.tokio]
+version = "1.33.0"
+features = ["full"]
+
 [dependencies.uuid]
 version = "1.5.0"
 features = ["serde", "v4"]
+
+[build-dependencies]
+tonic-build = "0.10.2"

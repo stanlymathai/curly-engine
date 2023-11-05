@@ -1,6 +1,10 @@
+// File: src/main.rs
+
 mod app;
 mod configs;
 mod constants;
+
+mod grpc;
 
 mod daos;
 mod models;
@@ -10,7 +14,9 @@ use configs::{database::Db, settings::load_config};
 use mongodb::Database;
 use std::sync::Arc;
 
-pub struct ServerConfig {
+use tokio::{join, spawn};
+
+pub struct HttpServerConfig {
     pub port: u16,
     pub api_endpoint: String,
     pub db: Arc<Database>,
@@ -33,12 +39,23 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
             e
         })?;
 
-    app::run_server(ServerConfig {
+    let app_config = HttpServerConfig {
         port: config.app_port,
         api_endpoint: config.api_endpoint,
         db: db.instance.clone(),
-    })
-    .await?;
+    };
+
+    // Spawn both the gRPC and web server's tasks
+    let grpc_server = spawn(grpc::serve(config.grpc_port));
+    let actix_server = spawn(app::run_server(app_config));
+
+    // Wait for both services to complete, effectively running them concurrently.
+    // If any of them fails, the error will be propagated.
+    let (grpc_result, actix_result) = join!(grpc_server, actix_server);
+
+    // Handle potential errors from both services
+    grpc_result??;
+    actix_result??;
 
     Ok(())
 }

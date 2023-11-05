@@ -27,7 +27,7 @@ pub async fn run_server(config: HttpServerConfig) -> std::io::Result<()> {
     .bind(("0.0.0.0", config.port))?
     .run();
 
-    println!("🚀 Server running at port {}", config.port);
+    println!("🚀 HTTP server launching on port {}", config.port);
 
     server.await?;
 

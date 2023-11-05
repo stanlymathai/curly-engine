@@ -1,3 +1,5 @@
+// src/services/auth.rs
+
 use crate::{
     constants,
     daos::{customer_dao::CustomerDao, signup_dao::SignupDao},

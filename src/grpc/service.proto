@@ -1,0 +1,21 @@
+syntax = "proto3";
+
+package myapp;
+
+// The customer service definition.
+service CustomerService {
+  // Sends a greeting
+  rpc FindById (FindByIdRequest) returns (FindByIdResponse) {}
+}
+
+// The request message containing the user's ID.
+message FindByIdRequest {
+  string id = 1;
+}
+
+// The response message containing the user's details.
+message FindByIdResponse {
+  string name = 1;
+  string email = 2;
+  // ... add other fields as needed
+}
