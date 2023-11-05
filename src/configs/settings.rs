@@ -1,6 +1,6 @@
 use actix_cors::Cors;
 use actix_web::http::header;
-use std::env;
+use std::{env, net::TcpListener};
 
 pub struct Config {
     pub app_port: u16,
@@ -10,12 +10,19 @@ pub struct Config {
     pub api_endpoint: String,
 }
 
+fn check_port_availability(port: u16) -> Result<(), String> {
+    match TcpListener::bind(("0.0.0.0", port)) {
+        Ok(_) => Ok(()),
+        Err(_) => Err(format!("Port {} is not available", port)),
+    }
+}
+
 pub fn load_config() -> Result<Config, String> {
     dotenv::dotenv().ok();
 
     Ok(Config {
-        app_port: get_env("APP_PORT", "8080")?,
-        grpc_port: get_env("GRPC_PORT", "7878")?,
+        app_port: fetch_and_verify_port("APP_PORT", "8080")?,
+        grpc_port: fetch_and_verify_port("GRPC_PORT", "7878")?,
         api_endpoint: get_required_env("API_ENDPOINT")?,
         db_name: get_required_env("DB_NAME")?,
         db_uri: construct_db_uri()?,
@@ -31,11 +38,11 @@ pub fn config_cors() -> Cors {
         .max_age(3600) // 1 hour
 }
 
-fn get_env(key: &str, default: &str) -> Result<u16, String> {
+fn fetch_and_verify_port(key: &str, default: &str) -> Result<u16, String> {
     env::var(key)
-        .unwrap_or_else(|_| default.to_string())
-        .parse()
-        .map_err(|_| format!("{} must be a valid number", key))
+        .map(|v| v.parse::<u16>().expect("Could not parse port"))
+        .or_else(|_| Ok(default.parse::<u16>().expect("Could not parse port")))
+        .and_then(|port| check_port_availability(port).map(|_| port))
 }
 
 fn get_required_env(key: &str) -> Result<String, String> {

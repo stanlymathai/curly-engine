@@ -1,5 +1,3 @@
-// File: src/main.rs
-
 mod app;
 mod configs;
 mod constants;
@@ -49,11 +47,10 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
     let grpc_server = spawn(grpc::serve(config.grpc_port));
     let actix_server = spawn(app::run_server(app_config));
 
-    // Wait for both services to complete, effectively running them concurrently.
-    // If any of them fails, the error will be propagated.
+    // Wait for both services to complete, effectively running them
+    // concurrently. If any of them fails, the error will be propagated.
     let (grpc_result, actix_result) = join!(grpc_server, actix_server);
 
-    // Handle potential errors from both services
     grpc_result??;
     actix_result??;
 
